@@ -1,17 +1,17 @@
 # 商品一覧
 
-<div style="display: flex; justify-content: space-between; border-bottom: 2px solid orange;">
+<div style="display: flex; justify-content: space-between; border-bottom: 2px solid;">
   <span style="background-color: red; color: white; padding: 5px; border: 1px solid red;">
-    <a href="">削除</a>
+    <a href="xoa" style="color: white;">削除</a> 
   </span>
   <span style="background-color: orange; color: white; padding: 5px; border: 1px solid brown;">
-    <a href="">エクスポート</a>
+    <a href="xuat" style="color: white;">エクスポート</a> 
   </span>
   <span style="background-color: green; color: white; padding: 5px; border: 1px solid green;">
-    <a href="">新規登録</a>
+    <a href="dangky" style="color: white;">新規登録</a> 
   </span>
   <span style="background-color: blue; color: white; padding: 5px; border: 1px solid blue;">
-    <a href="">検索</a>
+    <a href="timkiem" style="color: white;">検索</a> 
   </span>
 </div>
 
