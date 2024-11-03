@@ -32,6 +32,8 @@ public class Service implements IHotelManager {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+
+        //
     }
 
     public double getPrice() {
