@@ -79,7 +79,7 @@ public class Customer implements IHotelManager {
         setPhoneNumber(validator.getPhoneNumberInput(scanner, "Nhập số điện thoại: "));
         setIdCard(validator.getNonEmptyStringInput(scanner, "Nhập số CMND: "));
         setAddress(validator.getNonEmptyStringInput(scanner, "Nhập địa chỉ: "));
-        setCustomerType(validator.getCustomerTypeInput(scanner, "Nhập loại khách hàng: "));
+        setCustomerType(validator.getCustomerTypeInput(scanner, "Nhập loại khách hàng (1 - Regular, 2 - VIP): "));
     }
 
     @Override

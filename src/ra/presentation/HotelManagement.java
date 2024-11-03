@@ -127,14 +127,14 @@ public class HotelManagement {
             return;
         }
         for (Customer customer : customers) {
-            System.out.println(customer);
+            customer.displayData();
         }
     }
 
     private static void displayAllCustomers() {
         Customer[] customers = customerBusiness.getAll();
         for (Customer customer : customers) {
-            System.out.println(customer);
+            customer.displayData();
             System.out.println("====================================");
         }
     }
