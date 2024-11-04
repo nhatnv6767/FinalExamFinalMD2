@@ -6,8 +6,12 @@ import ra.entity.Customer;
 import ra.entity.Room;
 import ra.validation.Validator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 enum CustomerMenu {
     LIST(1, "List all customers"),
@@ -331,59 +335,13 @@ public class HotelManagement {
         System.out.println("Customer information:");
         customer.displayData();
 
-        int choice;
-        do {
-            System.out.println("Choose field to update:");
-            System.out.println("1. Update customer name");
-            System.out.println("2. Update phone number");
-            System.out.println("3. Update id card");
-            System.out.println("4. Update address");
-            System.out.println("5. Update customer type");
-            System.out.println("0. Cancel");
-            System.out.print("Please choose: ");
-            choice = getIntInput(scanner);
-
-            switch (choice) {
-                case 1:
-                    String newCustomerName = validator.getNonEmptyStringInput(scanner, "Enter new customer name: ");
-                    if (!newCustomerName.isEmpty()) {
-                        customer.setCustomerName(newCustomerName);
-                    }
-                    break;
-                case 2:
-                    String newPhoneNumber = validator.getPhoneNumberInput(scanner, "Enter new phone number: ");
-                    if (!newPhoneNumber.isEmpty()) {
-                        customer.setPhoneNumber(newPhoneNumber);
-                    }
-                    break;
-                case 3:
-                    String newIdCard = validator.getNonEmptyStringInput(scanner, "Enter new id card: ");
-                    if (!newIdCard.isEmpty()) {
-                        customer.setIdCard(newIdCard);
-                    }
-                    break;
-                case 4:
-                    String newAddress = validator.getNonEmptyStringInput(scanner, "Enter new address: ");
-                    if (!newAddress.isEmpty()) {
-                        customer.setAddress(newAddress);
-                    }
-                    break;
-                case 5:
-                    String newCustomerType = validator.getCustomerTypeInput(scanner, "Enter new customer type (1 - Regular, 2 - VIP): ");
-                    if (!newCustomerType.isEmpty()) {
-                        customer.setCustomerType(newCustomerType);
-                    }
-                    break;
-                case 0:
-                    System.out.println("Cancel");
-                    break;
-                default:
-                    System.err.println("Invalid choice. Please choose again");
-            }
-
-        } while (choice != 0);
-
-        customerBusiness.update(customer);
+        Map<Integer, BiConsumer<Customer, Scanner>> updateOptions = new HashMap<>();
+        updateOptions.put(1, (c, s) -> c.setCustomerName(validator.getNonEmptyStringInput(s, "Enter new customer name: ")));
+        updateOptions.put(2, (c, s) -> c.setPhoneNumber(validator.getPhoneNumberInput(s, "Enter new phone number: ")));
+        updateOptions.put(3, (c, s) -> c.setIdCard(validator.getNonEmptyStringInput(s, "Enter new id card: ")));
+        updateOptions.put(4, (c, s) -> c.setAddress(validator.getNonEmptyStringInput(s, "Enter new address: ")));
+        updateOptions.put(5, (c, s) -> c.setCustomerType(validator.getCustomerTypeInput(s, "Enter new customer type (1 - Regular, 2 - VIP): ")));
+        updateEntity(customer, scanner, validator, customerBusiness::update, updateOptions);
     }
 
     private static void deleteCustomer(Scanner scanner) {
@@ -425,5 +383,23 @@ public class HotelManagement {
                 System.out.println("Invalid input. Please enter a number");
             }
         }
+    }
+
+    private static <T> void updateEntity(T entity, Scanner scanner, Validator validator, Consumer<T> updateFunction, Map<Integer, BiConsumer<T, Scanner>> updateOptions) {
+        int choice;
+        do {
+            System.out.println("Choose field to update:");
+            updateOptions.forEach((key, value) -> System.out.println(key + ". " + value));
+            System.out.println("0. Cancel");
+            System.out.print("Please choose: ");
+            choice = getIntInput(scanner);
+            if (choice != 0 && updateOptions.containsKey(choice)) {
+                updateOptions.get(choice).accept(entity, scanner);
+            } else if (choice != 0) {
+                System.err.println("Invalid choice. Please choose again");
+            }
+
+        } while (choice != 0);
+        updateFunction.accept(entity);
     }
 }
