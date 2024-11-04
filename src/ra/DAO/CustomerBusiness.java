@@ -91,6 +91,11 @@ public class CustomerBusiness implements DAOInterface<Customer> {
 
         try {
             openConnection();
+            if (get(customer.getCustomerId()) == null) {
+                System.out.println("Customer not found");
+                return;
+            }
+
             callSt = conn.prepareCall("{call deleteCustomer(?)}");
             callSt.setInt(1, customer.getCustomerId());
             callSt.executeUpdate();
@@ -170,6 +175,7 @@ public class CustomerBusiness implements DAOInterface<Customer> {
         }
         return customers.toArray(new Customer[0]);
     }
+    
 
     public Customer[] searchCustomerByCondition(String condition) {
         List<Customer> customers = new ArrayList<>();

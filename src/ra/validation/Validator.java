@@ -92,6 +92,20 @@ public class Validator {
         return input;
     }
 
+    public String getNonEmptyStringInput(Scanner scanner, String prompt, int maxLength) {
+        String input;
+        do {
+            System.out.print(prompt);
+            input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.err.println("Không được để trống");
+            } else if (input.length() > maxLength) {
+                System.err.println("Không được nhập quá " + maxLength + " ký tự");
+            }
+        } while (input.isEmpty() || input.length() > maxLength);
+        return input;
+    }
+
     public int getPositiveIntInput(Scanner scanner, String prompt) {
         int input;
         do {
@@ -147,6 +161,40 @@ public class Validator {
                 return "VIP";
             } else {
                 System.err.println("Vui lòng nhập 1 hoặc 2 (1 - Regular, 2 - VIP)");
+            }
+        }
+    }
+
+    public String getRoomTypeInput(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            switch (input) {
+                case "1":
+                    return "Single";
+                case "2":
+                    return "Double";
+                case "3":
+                    return "Family";
+                case "4":
+                    return "VIP";
+                default:
+                    System.err.println("Please enter 1, 2, 3 or 4 (1 - Single, 2 - Double, 3 - Family, 4 - VIP)");
+            }
+        }
+    }
+
+    public String getRoomStatusInput(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            switch (input) {
+                case "1":
+                    return "Available";
+                case "2":
+                    return "Occupied";
+                default:
+                    System.err.println("Please enter 1 or 2 (1 - Available, 2 - Occupied)");
             }
         }
     }

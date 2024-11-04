@@ -66,11 +66,18 @@ public class Room implements IHotelManager {
 
     @Override
     public void inputData(Scanner scanner, Validator validator) {
-
+        setRoomNumber(validator.getNonEmptyStringInput(scanner, "Nhập số phòng: ", 10));
+        setRoomType(validator.getRoomTypeInput(scanner, "Nhập loại phòng (1 - Single, 2 - Double, 3 - Family, 4 - VIP): "));
+        setPrice(validator.getPositiveDoubleInput(scanner, "Nhập giá phòng: "));
+        setStatus(validator.getRoomStatusInput(scanner, "Nhập trạng thái phòng (1 - Available, 2 - Occupied): "));
     }
 
     @Override
     public void displayData() {
-
+        System.out.println("Room ID: " + roomId);
+        System.out.println("Room Number: " + roomNumber);
+        System.out.println("Room Type: " + roomType);
+        System.out.println("Price: " + price);
+        System.out.println("Status: " + status);
     }
 }

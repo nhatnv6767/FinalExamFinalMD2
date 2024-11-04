@@ -1,9 +1,12 @@
 package ra.presentation;
 
 import ra.DAO.CustomerBusiness;
+import ra.DAO.RoomBusiness;
 import ra.entity.Customer;
+import ra.entity.Room;
 import ra.validation.Validator;
 
+import java.util.List;
 import java.util.Scanner;
 
 enum CustomerMenu {
@@ -31,8 +34,37 @@ enum CustomerMenu {
     }
 }
 
+enum RoomMenu {
+    LIST(1, "List all rooms"),
+    ADD(2, "Add new room"),
+    UPDATE(3, "Update room"),
+    DELETE(4, "Delete room"),
+    SEARCH_BY_TYPE(5, "Search room by type"),
+    SEARCH_BY_PRICE(6, "Search room by price"),
+    SEARCH_BY_STATUS(7, "Search room by status"),
+    ROOM_AVAILABILITY(8, "Get rooms availability"),
+    BACK(0, "Back to main menu");
+
+    private final int value;
+    private final String description;
+
+    RoomMenu(int value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
+
 public class HotelManagement {
     private static CustomerBusiness customerBusiness = new CustomerBusiness();
+    private static RoomBusiness roomBusiness = new RoomBusiness();
     private static final Validator validator = new Validator();
 
     public static void main(String[] args) {
@@ -41,12 +73,16 @@ public class HotelManagement {
         do {
             System.out.println("*************HOTEL MANAGEMENT*************");
             System.out.println("1. Customer Management");
+            System.out.println("2. Room Management");
             System.out.println("0. Exit");
             System.out.print("Please choose: ");
             choice = getIntInput(scanner);
             switch (choice) {
                 case 1:
                     customerMenu(scanner);
+                    break;
+                case 2:
+                    roomMenu(scanner);
                     break;
                 case 0:
                     System.out.println("Goodbye!");
@@ -56,6 +92,191 @@ public class HotelManagement {
             }
         } while (choice != 0);
     }
+
+    private static void roomMenu(Scanner scanner) {
+        int choice;
+        do {
+            System.out.println("*************ROOM MANAGEMENT*************");
+            for (RoomMenu menu : RoomMenu.values()) {
+                System.out.println(menu.getValue() + ". " + menu.getDescription());
+            }
+            System.out.print("Please choose: ");
+            choice = getIntInput(scanner);
+
+            switch (choice) {
+                case 1:
+                    displayAllRooms();
+                    break;
+                case 2:
+                    addRoom(scanner);
+                    break;
+                case 3:
+                    updateRoom(scanner);
+                    break;
+                case 4:
+                    deleteRoom(scanner);
+                    break;
+                case 5:
+                    searchRoomByType(scanner);
+                    break;
+                case 6:
+                    searchRoomByPrice(scanner);
+                    break;
+                case 7:
+                    searchRoomByStatus(scanner);
+                    break;
+                case 8:
+                    getRoomAvailability();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.err.println("Invalid choice. Please choose again");
+            }
+        } while (choice != 0);
+    }
+
+    private static void addRoom(Scanner scanner) {
+        Room room = new Room();
+        room.inputData(scanner, validator);
+        roomBusiness.insert(room);
+    }
+
+    private static void displayAllRooms() {
+        Room[] rooms = roomBusiness.getAll();
+        System.out.println("Room list:");
+        for (Room room : rooms) {
+            room.displayData();
+            System.out.println("====================================");
+        }
+    }
+
+    private static void updateRoom(Scanner scanner) {
+        System.out.print("Enter room ID: ");
+        int roomId = getIntInput(scanner);
+        Room room = roomBusiness.get(roomId);
+        if (room == null) {
+            System.err.println("Room not found");
+            return;
+        }
+
+        System.out.println("Room information:");
+        room.displayData();
+
+        int choice;
+        do {
+            System.out.println("Choose field to update:");
+            System.out.println("1. Update room number");
+            System.out.println("2. Update room type");
+            System.out.println("3. Update price");
+            System.out.println("4. Update status");
+            System.out.println("0. Cancel");
+            System.out.print("Please choose: ");
+            choice = getIntInput(scanner);
+
+            switch (choice) {
+                case 1:
+                    String newRoomNumber = validator.getNonEmptyStringInput(scanner, "Enter new room number: ");
+                    if (!newRoomNumber.isEmpty()) {
+                        room.setRoomNumber(newRoomNumber);
+                    }
+                    break;
+                case 2:
+                    String newRoomType = validator.getRoomTypeInput(scanner, "Enter new room type (1 - Single, 2 - Double, 3 - Family, 4 - VIP): ");
+                    if (!newRoomType.isEmpty()) {
+                        room.setRoomType(newRoomType);
+                    }
+                    break;
+                case 3:
+                    double newPrice = validator.getPositiveDoubleInput(scanner, "Enter new price: ");
+                    if (newPrice > 0) {
+                        room.setPrice(newPrice);
+                    }
+                    break;
+                case 4:
+                    String newStatus = validator.getRoomStatusInput(scanner, "Enter new status (1 - Available, 2 - Occupied): ");
+                    if (!newStatus.isEmpty()) {
+                        room.setStatus(newStatus);
+                    }
+                    break;
+                case 0:
+                    System.out.println("Cancel");
+                    break;
+                default:
+                    System.err.println("Invalid choice. Please choose again");
+            }
+
+        } while (choice != 0);
+
+        roomBusiness.update(room);
+    }
+
+    private static void deleteRoom(Scanner scanner) {
+        int roomId = validator.getPositiveIntInput(scanner, "Enter room ID: ");
+        Room room = roomBusiness.get(roomId);
+        if (room == null) {
+            System.err.println("Room not found");
+            return;
+        }
+        roomBusiness.delete(room);
+    }
+
+    private static void searchRoomByType(Scanner scanner) {
+        String roomType = validator.getRoomTypeInput(scanner, "Enter room type (1 - Single, 2 - Double, 3 - Family, 4 - VIP): ");
+        List<Room> rooms = roomBusiness.searchRoomByType(roomType);
+        if (rooms.isEmpty()) {
+            System.err.println("Room not found");
+            return;
+        }
+        for (Room room : rooms) {
+            room.displayData();
+            System.out.println("====================================");
+        }
+    }
+
+    private static void searchRoomByPrice(Scanner scanner) {
+        double minPrice = validator.getPositiveDoubleInput(scanner, "Enter minimum price: ");
+        double maxPrice = validator.getPositiveDoubleInput(scanner, "Enter maximum price: ");
+        if (minPrice > maxPrice) {
+            System.err.println("Invalid price range");
+            return;
+        }
+        List<Room> rooms = roomBusiness.searchRoomByPrice(minPrice, maxPrice);
+        if (rooms.isEmpty()) {
+            System.err.println("Room not found");
+            return;
+        }
+        for (Room room : rooms) {
+            room.displayData();
+            System.out.println("====================================");
+        }
+    }
+
+    private static void searchRoomByStatus(Scanner scanner) {
+        String status = validator.getRoomStatusInput(scanner, "Enter room status (1 - Available, 2 - Occupied): ");
+        List<Room> rooms = roomBusiness.searchRoomByStatus(status);
+        if (rooms.isEmpty()) {
+            System.err.println("Room not found");
+            return;
+        }
+        for (Room room : rooms) {
+            room.displayData();
+            System.out.println("====================================");
+        }
+    }
+
+    private static void getRoomAvailability() {
+        List<Room> rooms = roomBusiness.getAvailableRoom();
+        if (rooms.isEmpty()) {
+            System.err.println("No available room");
+            return;
+        }
+        for (Room room : rooms) {
+            room.displayData();
+            System.out.println("====================================");
+        }
+    }
+
 
     private static void customerMenu(Scanner scanner) {
         int choice;
@@ -90,6 +311,7 @@ public class HotelManagement {
             }
         } while (choice != 0);
     }
+
 
     private static void addCustomer(Scanner scanner) {
         Customer customer = new Customer();
