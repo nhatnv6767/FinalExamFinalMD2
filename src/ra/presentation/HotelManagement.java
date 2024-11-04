@@ -67,6 +67,31 @@ enum RoomMenu {
     }
 }
 
+enum BookingMenu {
+    LIST(1, "List all bookings"),
+    ADD(2, "Add new booking"),
+    CALCULATE_TOTAL_PRICE(3, "Calculate total price"),
+    PRINT_BILL(4, "Print bill"),
+    DELETE(5, "Delete booking"),
+    BACK(0, "Back to main menu");
+
+    private final int value;
+    private final String description;
+
+    BookingMenu(int value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
+
 public class HotelManagement {
     private static CustomerBusiness customerBusiness = new CustomerBusiness();
     private static RoomBusiness roomBusiness = new RoomBusiness();
@@ -79,6 +104,7 @@ public class HotelManagement {
             System.out.println("*************HOTEL MANAGEMENT*************");
             System.out.println("1. Customer Management");
             System.out.println("2. Room Management");
+            System.out.println("3. Booking Management");
             System.out.println("0. Exit");
             System.out.print("Please choose: ");
             choice = getIntInput(scanner);
@@ -89,6 +115,9 @@ public class HotelManagement {
                 case 2:
                     roomMenu(scanner);
                     break;
+                case 3:
+                    bookingMenu(scanner);
+                    break;
                 case 0:
                     System.out.println("Goodbye!");
                     break;
@@ -96,6 +125,60 @@ public class HotelManagement {
                     System.err.println("Invalid choice. Please choose again");
             }
         } while (choice != 0);
+    }
+
+    private static void bookingMenu(Scanner scanner) {
+        int choice;
+        do {
+            System.out.println("*************BOOKING MANAGEMENT*************");
+            for (BookingMenu menu : BookingMenu.values()) {
+                System.out.println(menu.getValue() + ". " + menu.getDescription());
+            }
+            System.out.print("Please choose: ");
+            choice = getIntInput(scanner);
+
+            switch (choice) {
+                case 1:
+                    displayAllBookings();
+                    break;
+                case 2:
+                    addBooking(scanner);
+                    break;
+                case 3:
+                    calculateTotalPrice(scanner);
+                    break;
+                case 4:
+                    printBill(scanner);
+                    break;
+                case 5:
+                    deleteBooking(scanner);
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.err.println("Invalid choice. Please choose again");
+            }
+        } while (choice != 0);
+    }
+
+    private static void displayAllBookings() {
+
+    }
+
+    private static void addBooking(Scanner scanner) {
+
+    }
+
+    private static void calculateTotalPrice(Scanner scanner) {
+
+    }
+
+    private static void printBill(Scanner scanner) {
+
+    }
+
+    private static void deleteBooking(Scanner scanner) {
+
     }
 
     private static void roomMenu(Scanner scanner) {
