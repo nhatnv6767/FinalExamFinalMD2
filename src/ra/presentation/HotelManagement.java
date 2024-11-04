@@ -4,6 +4,7 @@ import ra.DAO.CustomerBusiness;
 import ra.DAO.RoomBusiness;
 import ra.entity.Customer;
 import ra.entity.Room;
+import ra.util.UpdateOption;
 import ra.validation.Validator;
 
 import java.util.HashMap;
@@ -335,13 +336,15 @@ public class HotelManagement {
         System.out.println("Customer information:");
         customer.displayData();
 
-        Map<Integer, BiConsumer<Customer, Scanner>> updateOptions = new HashMap<>();
-        updateOptions.put(1, (c, s) -> c.setCustomerName(validator.getNonEmptyStringInput(s, "Enter new customer name: ")));
-        updateOptions.put(2, (c, s) -> c.setPhoneNumber(validator.getPhoneNumberInput(s, "Enter new phone number: ")));
-        updateOptions.put(3, (c, s) -> c.setIdCard(validator.getNonEmptyStringInput(s, "Enter new id card: ")));
-        updateOptions.put(4, (c, s) -> c.setAddress(validator.getNonEmptyStringInput(s, "Enter new address: ")));
-        updateOptions.put(5, (c, s) -> c.setCustomerType(validator.getCustomerTypeInput(s, "Enter new customer type (1 - Regular, 2 - VIP): ")));
-        updateEntity(customer, scanner, validator, customerBusiness::update, updateOptions);
+        Map<Integer, UpdateOption<Customer>> updateOptions = new HashMap<>();
+        updateOptions.put(1, new UpdateOption<>("Update customer name", (c, s) -> c.setCustomerName(validator.getNonEmptyStringInput(s, "Enter new customer name: "))));
+        updateOptions.put(2, new UpdateOption<>("Update phone number", (c, s) -> c.setPhoneNumber(validator.getPhoneNumberInput(s, "Enter new phone number: "))));
+        updateOptions.put(3, new UpdateOption<>("Update id card", (c, s) -> c.setIdCard(validator.getNonEmptyStringInput(s, "Enter new id card: "))));
+        updateOptions.put(4, new UpdateOption<>("Update address", (c, s) -> c.setAddress(validator.getNonEmptyStringInput(s, "Enter new address: "))));
+        updateOptions.put(5, new UpdateOption<>("Update customer type", (c, s) -> c.setCustomerType(validator.getCustomerTypeInput(s, "Enter new customer type (1 - Regular, 2 - VIP): "))));
+
+
+        updateEntity(customer, scanner, customerBusiness::update, updateOptions);
     }
 
     private static void deleteCustomer(Scanner scanner) {
@@ -385,21 +388,24 @@ public class HotelManagement {
         }
     }
 
-    private static <T> void updateEntity(T entity, Scanner scanner, Validator validator, Consumer<T> updateFunction, Map<Integer, BiConsumer<T, Scanner>> updateOptions) {
+    private static <T> void updateEntity(T entity, Scanner scanner, Consumer<T> updateFunction, Map<Integer, UpdateOption<T>> updateOptions) {
         int choice;
         do {
             System.out.println("Choose field to update:");
-            updateOptions.forEach((key, value) -> System.out.println(key + ". " + value));
+            updateOptions.forEach((key, value) -> System.out.println(key + ". " + value.getDescription()));
             System.out.println("0. Cancel");
             System.out.print("Please choose: ");
             choice = getIntInput(scanner);
+
             if (choice != 0 && updateOptions.containsKey(choice)) {
-                updateOptions.get(choice).accept(entity, scanner);
+                updateOptions.get(choice).getAction().accept(entity, scanner);
             } else if (choice != 0) {
                 System.err.println("Invalid choice. Please choose again");
             }
-
         } while (choice != 0);
+
         updateFunction.accept(entity);
     }
+
+
 }
