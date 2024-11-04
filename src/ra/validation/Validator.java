@@ -1,5 +1,8 @@
 package ra.validation;
 
+import ra.DAO.CustomerBusiness;
+import ra.DAO.RoomBusiness;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -197,5 +200,37 @@ public class Validator {
                     System.err.println("Please enter 1 or 2 (1 - Available, 2 - Occupied)");
             }
         }
+    }
+
+    public int getValidCustomerId(Scanner scanner, String prompt) {
+        CustomerBusiness customerBusiness = new CustomerBusiness();
+        int customerId;
+
+        do {
+            System.out.print(prompt);
+            customerId = getIntInput(scanner);
+            if (customerBusiness.get(customerId) == null) {
+                System.err.println("Customer ID không hợp lệ. Vui lòng thử lại.");
+            }
+        } while (customerBusiness.get(customerId) == null);
+
+
+        return customerId;
+    }
+
+    public int getValidRoomId(Scanner scanner, String prompt) {
+        RoomBusiness roomBusiness = new RoomBusiness();
+        int roomId;
+
+        do {
+            System.out.print(prompt);
+            roomId = getIntInput(scanner);
+            if (roomBusiness.get(roomId) == null) {
+                System.err.println("Room ID không hợp lệ. Vui lòng thử lại.");
+            }
+        } while (roomBusiness.get(roomId) == null);
+
+
+        return roomId;
     }
 }

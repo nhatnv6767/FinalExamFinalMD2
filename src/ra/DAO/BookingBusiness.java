@@ -4,10 +4,7 @@ import ra.database.JDBCUtil;
 import ra.entity.Booking;
 import ra.entity.BookingDetails;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,21 +42,36 @@ public class BookingBusiness implements BookingDAOInterface {
 
     @Override
     public void insert(Booking booking) {
+
+    }
+
+    public int insertBooking(Booking booking) {
+        int bookingId = -1;
         try {
             openConnection();
-            callSt = conn.prepareCall("{call addBooking(?, ?, ?, ?, ?)}");
-            callSt.setInt(1, booking.getCustomerId());
-            callSt.setInt(2, booking.getRoomId());
-            callSt.setDate(3, java.sql.Date.valueOf(booking.getArrivalDate()));
-            callSt.setDate(4, java.sql.Date.valueOf(booking.getDepartureDate()));
-            callSt.setInt(5, booking.getNumberOfGuests());
-            callSt.executeUpdate();
-            System.out.println("Booking added successfully");
+            String sql = "{call addBooking(?, ?, ?, ?, ?)}";
+            PreparedStatement ptsm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+
+            ptsm.setInt(1, booking.getCustomerId());
+            ptsm.setInt(2, booking.getRoomId());
+            ptsm.setDate(3, Date.valueOf(booking.getArrivalDate()));
+            ptsm.setDate(4, Date.valueOf(booking.getDepartureDate()));
+            ptsm.setInt(5, booking.getNumberOfGuests());
+            ptsm.executeUpdate();
+
+            ResultSet rs = ptsm.getGeneratedKeys();
+            if (rs.next()) {
+                bookingId = rs.getInt(1);
+            }
+
+            System.out.println("Booking added successfully with ID: " + bookingId);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             closeConnection();
         }
+        return bookingId;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package ra.presentation;
 
+import ra.DAO.BookingBusiness;
 import ra.DAO.CustomerBusiness;
 import ra.DAO.RoomBusiness;
+import ra.entity.Booking;
+import ra.entity.BookingDetails;
 import ra.entity.Customer;
 import ra.entity.Room;
 import ra.util.UpdateOption;
@@ -95,6 +98,7 @@ enum BookingMenu {
 public class HotelManagement {
     private static CustomerBusiness customerBusiness = new CustomerBusiness();
     private static RoomBusiness roomBusiness = new RoomBusiness();
+    private static BookingBusiness bookingBusiness = new BookingBusiness();
     private static final Validator validator = new Validator();
 
     public static void main(String[] args) {
@@ -162,10 +166,21 @@ public class HotelManagement {
     }
 
     private static void displayAllBookings() {
-        
+        BookingDetails[] bookingDetails = bookingBusiness.getAllDetails();
+        for (BookingDetails bookingDetail : bookingDetails) {
+            bookingDetail.displayData();
+            System.out.println("====================================");
+        }
     }
 
     private static void addBooking(Scanner scanner) {
+        Booking booking = new Booking();
+        booking.inputData(scanner, validator);
+
+        int bookingId = bookingBusiness.insertBooking(booking);
+        if (bookingId != -1) {
+            bookingBusiness.calculateTotalPrice(bookingId);
+        }
 
     }
 

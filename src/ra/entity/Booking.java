@@ -85,7 +85,12 @@ public class Booking implements IHotelManager {
 
     @Override
     public void inputData(Scanner scanner, Validator validator) {
-
+        setCustomerId(validator.getValidCustomerId(scanner, "Enter customer ID: "));
+        setRoomId(validator.getValidRoomId(scanner, "Enter room ID: "));
+        setArrivalDate(validator.getDateInput(scanner, "Enter arrival date (yyyy-MM-dd): "));
+        setDepartureDate(validator.getDateInput(scanner, "Enter departure date (yyyy-MM-dd): "));
+        setNumberOfGuests(validator.getPositiveIntInput(scanner, "Enter number of guests: "));
+        setTotalPrice(0.0);
     }
 
     @Override

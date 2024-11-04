@@ -120,4 +120,20 @@ public class BookingDetails {
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
+
+    public void displayData() {
+        System.out.println("Booking ID: " + bookingId);
+        System.out.println("Customer Name: " + customerName);
+        System.out.println("ID Card: " + idCard);
+        System.out.println("Phone Number: " + phoneNumber);
+        System.out.println("Address: " + address);
+        System.out.println("Customer Type: " + customerType);
+        System.out.println("Room Number: " + roomNumber);
+        System.out.println("Room Type: " + roomType);
+        System.out.println("Price: " + price);
+        System.out.println("Arrival Date: " + arrivalDate);
+        System.out.println("Departure Date: " + departureDate);
+        System.out.println("Number of Guests: " + numberOfGuests);
+        System.out.println("Total Price: " + totalPrice);
+    }
 }
