@@ -162,7 +162,7 @@ public class HotelManagement {
     }
 
     private static void displayAllBookings() {
-
+        
     }
 
     private static void addBooking(Scanner scanner) {

@@ -165,4 +165,19 @@ public class BookingBusiness implements BookingDAOInterface {
             System.out.println("No booking details found for Booking ID: " + bookingId);
         }
     }
+
+    public void cancelBooking(int bookingId) {
+        try {
+            openConnection();
+            String sql = "{call deleteBooking(?)}";
+            callSt = conn.prepareCall(sql);
+            callSt.setInt(1, bookingId);
+            callSt.executeUpdate();
+            System.out.println("Booking cancelled successfully");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
 }
