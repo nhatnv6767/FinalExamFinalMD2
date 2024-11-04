@@ -168,52 +168,13 @@ public class HotelManagement {
         System.out.println("Room information:");
         room.displayData();
 
-        int choice;
-        do {
-            System.out.println("Choose field to update:");
-            System.out.println("1. Update room number");
-            System.out.println("2. Update room type");
-            System.out.println("3. Update price");
-            System.out.println("4. Update status");
-            System.out.println("0. Cancel");
-            System.out.print("Please choose: ");
-            choice = getIntInput(scanner);
+        Map<Integer, UpdateOption<Room>> updateOptions = new HashMap<>();
+        updateOptions.put(1, new UpdateOption<>("Update room number", (r, s) -> r.setRoomNumber(validator.getNonEmptyStringInput(s, "Enter new room number: ", 10))));
+        updateOptions.put(2, new UpdateOption<>("Update room type", (r, s) -> r.setRoomType(validator.getRoomTypeInput(s, "Enter new room type (1 - Single, 2 - Double, 3 - Family, 4 - VIP): "))));
+        updateOptions.put(3, new UpdateOption<>("Update price", (r, s) -> r.setPrice(validator.getPositiveDoubleInput(s, "Enter new price: "))));
+        updateOptions.put(4, new UpdateOption<>("Update status", (r, s) -> r.setStatus(validator.getRoomStatusInput(s, "Enter new status (1 - Available, 2 - Occupied): "))));
+        updateEntity(room, scanner, roomBusiness::update, updateOptions);
 
-            switch (choice) {
-                case 1:
-                    String newRoomNumber = validator.getNonEmptyStringInput(scanner, "Enter new room number: ");
-                    if (!newRoomNumber.isEmpty()) {
-                        room.setRoomNumber(newRoomNumber);
-                    }
-                    break;
-                case 2:
-                    String newRoomType = validator.getRoomTypeInput(scanner, "Enter new room type (1 - Single, 2 - Double, 3 - Family, 4 - VIP): ");
-                    if (!newRoomType.isEmpty()) {
-                        room.setRoomType(newRoomType);
-                    }
-                    break;
-                case 3:
-                    double newPrice = validator.getPositiveDoubleInput(scanner, "Enter new price: ");
-                    if (newPrice > 0) {
-                        room.setPrice(newPrice);
-                    }
-                    break;
-                case 4:
-                    String newStatus = validator.getRoomStatusInput(scanner, "Enter new status (1 - Available, 2 - Occupied): ");
-                    if (!newStatus.isEmpty()) {
-                        room.setStatus(newStatus);
-                    }
-                    break;
-                case 0:
-                    System.out.println("Cancel");
-                    break;
-                default:
-                    System.err.println("Invalid choice. Please choose again");
-            }
-
-        } while (choice != 0);
-
-        roomBusiness.update(room);
     }
 
     private static void deleteRoom(Scanner scanner) {
@@ -399,6 +360,7 @@ public class HotelManagement {
 
             if (choice != 0 && updateOptions.containsKey(choice)) {
                 updateOptions.get(choice).getAction().accept(entity, scanner);
+                System.out.println("Field updated successfully");
             } else if (choice != 0) {
                 System.err.println("Invalid choice. Please choose again");
             }
