@@ -52,7 +52,6 @@ public class BookingBusiness implements BookingDAOInterface {
             String sql = "{call addBooking(?, ?, ?, ?, ?)}";
             PreparedStatement ptsm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-
             ptsm.setInt(1, booking.getCustomerId());
             ptsm.setInt(2, booking.getRoomId());
             ptsm.setDate(3, Date.valueOf(booking.getArrivalDate()));
@@ -86,6 +85,32 @@ public class BookingBusiness implements BookingDAOInterface {
 
     @Override
     public Booking get(int id) {
+        if (id <= 0) {
+            System.out.println("Invalid booking ID");
+            return null;
+        }
+
+        try {
+            openConnection();
+            callSt = conn.prepareCall("{call findBookingById(?)}");
+            callSt.setInt(1, id);
+            ResultSet rs = callSt.executeQuery();
+            if (rs.next()) {
+                Booking booking = new Booking();
+                booking.setBookingId(rs.getInt("bookingId"));
+                booking.setCustomerId(rs.getInt("customerId"));
+                booking.setRoomId(rs.getInt("roomId"));
+                booking.setArrivalDate(rs.getDate("arrivalDate").toLocalDate());
+                booking.setDepartureDate(rs.getDate("departureDate").toLocalDate());
+                booking.setNumberOfGuests(rs.getInt("numberOfGuests"));
+                return booking;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+
         return null;
     }
 

@@ -73,9 +73,9 @@ enum RoomMenu {
 enum BookingMenu {
     LIST(1, "List all bookings"),
     ADD(2, "Add new booking"),
-    CALCULATE_TOTAL_PRICE(3, "Calculate total price"),
-    PRINT_BILL(4, "Print bill"),
-    DELETE(5, "Delete booking"),
+    //    CALCULATE_TOTAL_PRICE(3, "Calculate total price"),
+    PRINT_BILL(3, "Print bill"),
+    DELETE(4, "Delete booking"),
     BACK(0, "Back to main menu");
 
     private final int value;
@@ -148,13 +148,13 @@ public class HotelManagement {
                 case 2:
                     addBooking(scanner);
                     break;
+//                case 3:
+//                    calculateTotalPrice(scanner);
+//                    break;
                 case 3:
-                    calculateTotalPrice(scanner);
-                    break;
-                case 4:
                     printBill(scanner);
                     break;
-                case 5:
+                case 4:
                     deleteBooking(scanner);
                     break;
                 case 0:
@@ -189,10 +189,23 @@ public class HotelManagement {
     }
 
     private static void printBill(Scanner scanner) {
-
+        int bookingId = validator.getPositiveIntInput(scanner, "Enter booking ID: ");
+        Booking booking = bookingBusiness.get(bookingId);
+        if (booking == null) {
+            System.err.println("Booking not found");
+            return;
+        }
+        bookingBusiness.printInvoice(bookingId);
     }
 
     private static void deleteBooking(Scanner scanner) {
+        int bookingId = validator.getPositiveIntInput(scanner, "Enter booking ID: ");
+        Booking booking = bookingBusiness.get(bookingId);
+        if (booking == null) {
+            System.err.println("Booking not found");
+            return;
+        }
+        bookingBusiness.cancelBooking(bookingId);
 
     }
 
