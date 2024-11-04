@@ -2,6 +2,7 @@ package ra.validation;
 
 import ra.DAO.CustomerBusiness;
 import ra.DAO.RoomBusiness;
+import ra.entity.Customer;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -60,14 +61,27 @@ public class Validator {
 
     public String getPhoneNumberInput(Scanner scanner, String prompt) {
         String input;
+        CustomerBusiness customerBusiness = new CustomerBusiness();
         do {
             System.out.print(prompt);
             input = scanner.nextLine().trim();
             if (!input.matches("\\d{11}")) {
                 System.err.println("Số điện thoại phải gồm 11 chữ số.");
+            } else if (isPhoneNumberDuplicate(input, customerBusiness)) {
+                System.err.println("Số điện thoại đã tồn tại.");
             }
-        } while (!input.matches("\\d{11}"));
+        } while (!input.matches("\\d{11}") || isPhoneNumberDuplicate(input, customerBusiness));
         return input;
+    }
+
+    private boolean isPhoneNumberDuplicate(String phoneNumber, CustomerBusiness customerBusiness) {
+        Customer[] customers = customerBusiness.getAll();
+        for (Customer customer : customers) {
+            if (customer.getPhoneNumber().equals(phoneNumber)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getEmailInput(Scanner scanner, String prompt) {
@@ -133,7 +147,7 @@ public class Validator {
         return input;
     }
 
-    private int getIntInput(Scanner scanner) {
+    public int getIntInput(Scanner scanner) {
         while (true) {
             try {
                 return Integer.parseInt(scanner.nextLine());

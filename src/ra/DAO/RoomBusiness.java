@@ -86,13 +86,11 @@ public class RoomBusiness implements DAOInterface<Room> {
             return;
         }
         try {
-            openConnection();
-
             if (get(room.getRoomId()) == null) {
                 System.out.println("Room not found");
                 return;
             }
-
+            openConnection();
             callSt = conn.prepareCall("{call deleteRoom(?)}");
             callSt.setInt(1, room.getRoomId());
             callSt.executeUpdate();
