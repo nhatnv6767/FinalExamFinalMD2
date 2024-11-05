@@ -1,7 +1,9 @@
 package ra.presentation;
 
-import ra.DAO.CustomerBusiness;
+import ra.DAO.CategoriesBusiness;
 import ra.DAO.RoomBusiness;
+import ra.entity.Categories;
+import ra.entity.CategoryStatistics;
 import ra.entity.Customer;
 import ra.entity.Room;
 import ra.util.UpdateOption;
@@ -15,7 +17,7 @@ import java.util.function.Consumer;
 
 
 public class StoreManagement {
-    private static CustomerBusiness customerBusiness = new CustomerBusiness();
+    private static CategoriesBusiness categoriesBusiness = new CategoriesBusiness();
     private static RoomBusiness roomBusiness = new RoomBusiness();
     private static final Validator validator = new Validator();
 
@@ -38,7 +40,7 @@ public class StoreManagement {
 
                     break;
                 case 0:
-                    System.out.println("Goodbye!");
+                    System.err.println("Goodbye!");
                     break;
                 default:
                     System.err.println("Invalid choice. Please choose again");
@@ -193,7 +195,7 @@ public class StoreManagement {
     private static void categoriesMenu(Scanner scanner) {
         int choice;
         do {
-            System.out.println("*************CUSTOMER MANAGEMENT*************");
+            System.out.println("*************CATEGORIES MANAGEMENT*************");
             for (CategoriesMenuEnum menu : CategoriesMenuEnum.values()) {
                 System.out.println(menu.getValue() + ". " + menu.getDescription());
             }
@@ -202,19 +204,19 @@ public class StoreManagement {
 
             switch (choice) {
                 case 1:
-//                    displayAllCustomers();
+                    displayAllCategories();
                     break;
                 case 2:
-//                    addCustomer(scanner);
+                    addCategory(scanner);
                     break;
                 case 3:
-//                    updateCustomer(scanner);
+                    updateCategory(scanner);
                     break;
                 case 4:
-//                    deleteCustomer(scanner);
+                    deleteCategory(scanner);
                     break;
                 case 5:
-//                    searchCustomerByCondition(scanner);
+                    displayProductsByCategory();
                     break;
                 case 0:
                     break;
@@ -224,63 +226,64 @@ public class StoreManagement {
         } while (choice != 0);
     }
 
-
-    private static void addCustomer(Scanner scanner) {
-        Customer customer = new Customer();
-        customer.inputData(scanner, validator);
-        customerBusiness.insert(customer);
-    }
-
-    private static void updateCustomer(Scanner scanner) {
-        System.out.print("Enter customer ID: ");
-        int customerId = validator.getIntInput(scanner);
-        Customer customer = customerBusiness.get(customerId);
-        if (customer == null) {
-            System.err.println("Customer not found");
-            return;
-        }
-
-        System.out.println("Customer information:");
-        customer.displayData();
-
-        Map<Integer, UpdateOption<Customer>> updateOptions = new HashMap<>();
-        updateOptions.put(1, new UpdateOption<>("Update customer name", (c, s) -> c.setCustomerName(validator.getNonEmptyStringInput(s, "Enter new customer name: "))));
-        updateOptions.put(2, new UpdateOption<>("Update phone number", (c, s) -> c.setPhoneNumber(validator.getPhoneNumberInput(s, "Enter new phone number: "))));
-        updateOptions.put(3, new UpdateOption<>("Update id card", (c, s) -> c.setIdCard(validator.getNonEmptyStringInput(s, "Enter new id card: "))));
-        updateOptions.put(4, new UpdateOption<>("Update address", (c, s) -> c.setAddress(validator.getNonEmptyStringInput(s, "Enter new address: "))));
-        updateOptions.put(5, new UpdateOption<>("Update customer type", (c, s) -> c.setCustomerType(validator.getCustomerTypeInput(s, "Enter new customer type (1 - Regular, 2 - VIP): "))));
-
-
-        updateEntity(customer, scanner, customerBusiness::update, updateOptions);
-    }
-
-    private static void deleteCustomer(Scanner scanner) {
-        int customerId = validator.getPositiveIntInput(scanner, "Enter customer ID: ");
-        Customer customer = customerBusiness.get(customerId);
-        if (customer == null) {
-            System.err.println("Customer not found");
-            return;
-        }
-        customerBusiness.delete(customer);
-    }
-
-    private static void searchCustomerByCondition(Scanner scanner) {
-        String condition = validator.getNonEmptyStringInput(scanner, "Enter customer name or phone number or id card: ");
-        Customer[] customers = customerBusiness.searchCustomerByCondition(condition);
-        if (customers.length == 0) {
-            System.err.println("Customer not found");
-            return;
-        }
-        for (Customer customer : customers) {
-            customer.displayData();
-        }
-    }
-
-    private static void displayAllCustomers() {
-        Customer[] customers = customerBusiness.getAll();
-        for (Customer customer : customers) {
-            customer.displayData();
+    private static void displayAllCategories() {
+        Categories[] categories = categoriesBusiness.getAll();
+        System.out.println("Category list:");
+        for (Categories category : categories) {
+            category.displayData();
             System.out.println("====================================");
+        }
+    }
+
+    private static void addCategory(Scanner scanner) {
+        Categories category = new Categories();
+        category.inputData(scanner, validator);
+        categoriesBusiness.insert(category);
+    }
+
+
+    private static void updateCategory(Scanner scanner) {
+        System.out.print("Enter Category ID: ");
+        int categoryId = validator.getIntInput(scanner);
+        Categories category = categoriesBusiness.get(categoryId);
+        if (category == null) {
+            System.err.println("Category not found");
+            return;
+        }
+
+        System.out.println("Category information:");
+        category.displayData();
+
+        Map<Integer, UpdateOption<Categories>> updateOptions = new HashMap<>();
+        updateOptions.put(1, new UpdateOption<>("Update category name", (c, s) -> c.setCategoryName(validator.getNonEmptyStringInput(s, "Enter new category name: ", 50))));
+
+
+        updateEntity(category, scanner, categoriesBusiness::update, updateOptions);
+    }
+
+    private static void deleteCategory(Scanner scanner) {
+        int categoryId = validator.getPositiveIntInput(scanner, "Enter category ID: ");
+        Categories category = categoriesBusiness.get(categoryId);
+        if (category == null) {
+            System.err.println("Category not found");
+            return;
+        }
+        categoriesBusiness.delete(category);
+    }
+
+    private static void displayProductsByCategory() {
+        List<CategoryStatistics> statistics = categoriesBusiness.getProductsByCategory();
+
+        if (statistics.isEmpty()) {
+            System.err.println("No products found");
+            return;
+        }
+
+        System.out.println("Products by category:");
+        for (CategoryStatistics stat : statistics) {
+            if (stat.getProductCount() > 0) {
+                System.out.println("Category: " + stat.getCategoryName() + ", Number of products: " + stat.getProductCount());
+            }
         }
     }
 
