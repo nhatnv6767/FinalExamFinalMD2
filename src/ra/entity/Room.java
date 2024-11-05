@@ -4,7 +4,7 @@ import ra.validation.Validator;
 
 import java.util.Scanner;
 
-public class Room implements IHotelManager {
+public class Room implements IStoreManager {
     private int roomId;
     private String roomNumber;
     // Single, Double, Family, VIP

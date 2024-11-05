@@ -1,5 +1,6 @@
 package ra.validation;
 
+import ra.DAO.CategoriesBusiness;
 import ra.DAO.CustomerBusiness;
 import ra.DAO.RoomBusiness;
 import ra.entity.Customer;
@@ -246,5 +247,21 @@ public class Validator {
 
 
         return roomId;
+    }
+
+    public int getValidCategoryId(Scanner scanner, String prompt) {
+        CategoriesBusiness categoriesBusiness = new CategoriesBusiness();
+        int categoryId;
+
+        do {
+            System.out.print(prompt);
+            categoryId = getIntInput(scanner);
+            if (categoriesBusiness.get(categoryId) == null) {
+                System.err.println("Category ID không hợp lệ. Vui lòng thử lại.");
+            }
+        } while (categoriesBusiness.get(categoryId) == null);
+
+
+        return categoryId;
     }
 }

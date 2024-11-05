@@ -4,7 +4,7 @@ import ra.validation.Validator;
 
 import java.util.Scanner;
 
-public class Customer implements IHotelManager {
+public class Customer implements IStoreManager {
 
     private int customerId;
     private String customerName;
