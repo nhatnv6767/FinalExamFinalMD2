@@ -3,10 +3,8 @@ package ra.DAO;
 import ra.database.JDBCUtil;
 import ra.entity.Products;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +73,8 @@ public class ProductsBusiness implements DAOInterface<Products> {
             callSt.setInt(3, products.getStock());
             callSt.setDouble(4, products.getCostPrice());
             callSt.setDouble(5, products.getSellingPrice());
-            callSt.setDate(6, java.sql.Date.valueOf(products.getCreatedAt()));
+            Date currentDate = Date.valueOf(LocalDate.now());
+            callSt.setDate(6, currentDate);
             callSt.setInt(7, products.getCategoryId());
             callSt.executeUpdate();
             System.out.println("Product updated successfully");

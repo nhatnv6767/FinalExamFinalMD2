@@ -1,11 +1,10 @@
 package ra.presentation;
 
 import ra.DAO.CategoriesBusiness;
-import ra.DAO.RoomBusiness;
+import ra.DAO.ProductsBusiness;
 import ra.entity.Categories;
 import ra.entity.CategoryStatistics;
-import ra.entity.Customer;
-import ra.entity.Room;
+import ra.entity.Products;
 import ra.util.UpdateOption;
 import ra.validation.Validator;
 
@@ -18,7 +17,7 @@ import java.util.function.Consumer;
 
 public class StoreManagement {
     private static CategoriesBusiness categoriesBusiness = new CategoriesBusiness();
-    private static RoomBusiness roomBusiness = new RoomBusiness();
+    private static ProductsBusiness productsBusiness = new ProductsBusiness();
     private static final Validator validator = new Validator();
 
     public static void main(String[] args) {
@@ -61,25 +60,25 @@ public class StoreManagement {
 
             switch (choice) {
                 case 1:
-//                    displayAllRooms();
+                    displayAllProducts();
                     break;
                 case 2:
-//                    addRoom(scanner);
+                    addProduct(scanner);
                     break;
                 case 3:
-//                    updateRoom(scanner);
+                    updateProduct(scanner);
                     break;
                 case 4:
-//                    deleteRoom(scanner);
+                    deleteProduct(scanner);
                     break;
                 case 5:
-//                    searchRoomByType(scanner);
+                    displayProductsByCreatedAtDesc();
                     break;
                 case 6:
-//                    searchRoomByPrice(scanner);
+                    searchProductByPrice(scanner);
                     break;
                 case 7:
-//                    searchRoomByStatus(scanner);
+                    displayTop3ProfitableProducts();
                     break;
                 case 0:
                     break;
@@ -89,108 +88,101 @@ public class StoreManagement {
         } while (choice != 0);
     }
 
-    private static void addRoom(Scanner scanner) {
-        Room room = new Room();
-        room.inputData(scanner, validator);
-        roomBusiness.insert(room);
+    private static void addProduct(Scanner scanner) {
+        Products product = new Products();
+        product.inputData(scanner, validator);
+        productsBusiness.insert(product);
     }
 
-    private static void displayAllRooms() {
-        Room[] rooms = roomBusiness.getAll();
-        System.out.println("Room list:");
-        for (Room room : rooms) {
-            room.displayData();
+    private static void displayAllProducts() {
+        Products[] products = productsBusiness.getAll();
+        System.out.println("Products list:");
+        for (Products product : products) {
+            product.displayData();
             System.out.println("====================================");
         }
     }
 
-    private static void updateRoom(Scanner scanner) {
-        System.out.print("Enter room ID: ");
-        int roomId = validator.getIntInput(scanner);
-        Room room = roomBusiness.get(roomId);
-        if (room == null) {
-            System.err.println("Room not found");
+    private static void updateProduct(Scanner scanner) {
+        System.out.print("Enter product ID: ");
+        int productId = validator.getIntInput(scanner);
+        Products product = productsBusiness.get(productId);
+        if (product == null) {
+            System.err.println("Product not found");
             return;
         }
 
-        System.out.println("Room information:");
-        room.displayData();
+        System.out.println("Product information:");
+        product.displayData();
 
-        Map<Integer, UpdateOption<Room>> updateOptions = new HashMap<>();
-        updateOptions.put(1, new UpdateOption<>("Update room number", (r, s) -> r.setRoomNumber(validator.getNonEmptyStringInput(s, "Enter new room number: ", 10))));
-        updateOptions.put(2, new UpdateOption<>("Update room type", (r, s) -> r.setRoomType(validator.getRoomTypeInput(s, "Enter new room type (1 - Single, 2 - Double, 3 - Family, 4 - VIP): "))));
-        updateOptions.put(3, new UpdateOption<>("Update price", (r, s) -> r.setPrice(validator.getPositiveDoubleInput(s, "Enter new price: "))));
-        updateOptions.put(4, new UpdateOption<>("Update status", (r, s) -> r.setStatus(validator.getRoomStatusInput(s, "Enter new status (1 - Available, 2 - Occupied): "))));
-        updateEntity(room, scanner, roomBusiness::update, updateOptions);
+        Map<Integer, UpdateOption<Products>> updateOptions = new HashMap<>();
+        updateOptions.put(1, new UpdateOption<>("Update product name", (p, s) -> p.setProductName(validator.getNonEmptyStringInput(s, "Enter new product name: ", 20))));
+        updateOptions.put(2, new UpdateOption<>("Update stock", (p, s) -> p.setStock(validator.getPositiveIntInput(s, "Enter new stock: "))));
+        updateOptions.put(3, new UpdateOption<>("Update cost price", (p, s) -> p.setCostPrice(validator.getPositiveDoubleInput(s, "Enter new cost price: "))));
+        updateOptions.put(4, new UpdateOption<>("Update selling price", (p, s) -> p.setSellingPrice(validator.getPositiveDoubleInput(s, "Enter new selling price: "))));
+        updateOptions.put(5, new UpdateOption<>("Update category ID", (p, s) -> p.setCategoryId(validator.getValidCategoryId(s, "Enter new category ID: "))));
+
+        updateEntity(product, scanner, productsBusiness::update, updateOptions);
 
     }
 
-    private static void deleteRoom(Scanner scanner) {
-        int roomId = validator.getPositiveIntInput(scanner, "Enter room ID: ");
-        Room room = roomBusiness.get(roomId);
-        if (room == null) {
-            System.err.println("Room not found");
+    private static void deleteProduct(Scanner scanner) {
+        int productId = validator.getPositiveIntInput(scanner, "Enter product ID: ");
+        Products product = productsBusiness.get(productId);
+        if (product == null) {
+            System.err.println("Product not found");
             return;
         }
-        roomBusiness.delete(room);
+        productsBusiness.delete(product);
     }
 
-    private static void searchRoomByType(Scanner scanner) {
-        String roomType = validator.getRoomTypeInput(scanner, "Enter room type (1 - Single, 2 - Double, 3 - Family, 4 - VIP): ");
-        List<Room> rooms = roomBusiness.searchRoomByType(roomType);
-        if (rooms.isEmpty()) {
-            System.err.println("Room not found");
-            return;
-        }
-        for (Room room : rooms) {
-            room.displayData();
-            System.out.println("====================================");
-        }
-    }
 
-    private static void searchRoomByPrice(Scanner scanner) {
+    private static void searchProductByPrice(Scanner scanner) {
         double minPrice = validator.getPositiveDoubleInput(scanner, "Enter minimum price: ");
         double maxPrice = validator.getPositiveDoubleInput(scanner, "Enter maximum price: ");
         if (minPrice > maxPrice) {
             System.err.println("Invalid price range");
             return;
         }
-        List<Room> rooms = roomBusiness.searchRoomByPrice(minPrice, maxPrice);
-        if (rooms.isEmpty()) {
-            System.err.println("Room not found");
+        List<Products> products = productsBusiness.searchProductsByPriceRange(minPrice, maxPrice);
+        if (products.isEmpty()) {
+            System.err.println("Product not found");
             return;
         }
-        for (Room room : rooms) {
-            room.displayData();
+        for (Products product : products) {
+            product.displayData();
             System.out.println("====================================");
         }
     }
 
-    private static void searchRoomByStatus(Scanner scanner) {
-        String status = validator.getRoomStatusInput(scanner, "Enter room status (1 - Available, 2 - Occupied): ");
-        List<Room> rooms = roomBusiness.searchRoomByStatus(status);
-        if (rooms.isEmpty()) {
-            System.err.println("Room not found");
+    private static void displayProductsByCreatedAtDesc() {
+        List<Products> products = productsBusiness.getProductsByCreatedAtDesc();
+        if (products.isEmpty()) {
+            System.err.println("No products found");
             return;
         }
-        for (Room room : rooms) {
-            room.displayData();
+        System.out.println("Products by created date (descending):");
+        for (Products product : products) {
+            product.displayData();
             System.out.println("====================================");
         }
     }
 
-    private static void getRoomAvailability() {
-        List<Room> rooms = roomBusiness.getAvailableRoom();
-        if (rooms.isEmpty()) {
-            System.err.println("No available room");
+    private static void displayTop3ProfitableProducts() {
+        List<Products> products = productsBusiness.getTop3ProfitableProducts();
+        if (products.isEmpty()) {
+            System.err.println("No products found");
             return;
         }
-        for (Room room : rooms) {
-            room.displayData();
+        System.out.println("Top 3 profitable products:");
+        for (Products product : products) {
+            product.displayData();
+            System.out.println("Profit: " + (product.getSellingPrice() - product.getCostPrice()));
             System.out.println("====================================");
         }
     }
 
+//    CATEGORIES MENU
 
     private static void categoriesMenu(Scanner scanner) {
         int choice;
