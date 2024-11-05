@@ -229,7 +229,7 @@ CREATE PROCEDURE get_top_3_profitable_products(
 
 begin
 
-    select *, (selling_price - cost_price)* stock as profit
+    select *, (selling_price - cost_price) as profit
     from Products
     order by profit desc
     limit 3;
