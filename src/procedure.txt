@@ -1,5 +1,5 @@
-NGUYEN VAN NHAT
-FK_JV240711_BS_NguyenVanNhat
+# NGUYEN VAN NHAT
+# FK_JV240711_BS_NguyenVanNhat
 
 
 CREATE TABLE Categories(
