@@ -1,17 +1,17 @@
 package ra.presentation;
 
-public enum CustomerMenuEnum {
-    LIST(1, "List all customers"),
-    ADD(2, "Add new customer"),
-    UPDATE(3, "Update customer"),
-    DELETE(4, "Delete customer"),
-    SEARCH_BY_CONDITION(5, "Search customer by name or phone number or id card"),
+public enum CategoriesMenuEnum {
+    LIST(1, "List all products"),
+    ADD(2, "Add new product"),
+    UPDATE(3, "Update product"),
+    DELETE(4, "Delete product"),
+    STATISTIC(5, "Show statistics of products by category"),
     BACK(0, "Back to main menu");
 
     private final int value;
     private final String description;
 
-    CustomerMenuEnum(int value, String description) {
+    CategoriesMenuEnum(int value, String description) {
         this.value = value;
         this.description = description;
     }

@@ -14,7 +14,7 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 
-public class HotelManagement {
+public class StoreManagement {
     private static CustomerBusiness customerBusiness = new CustomerBusiness();
     private static RoomBusiness roomBusiness = new RoomBusiness();
     private static final Validator validator = new Validator();
@@ -23,18 +23,19 @@ public class HotelManagement {
         Scanner scanner = new Scanner(System.in);
         int choice;
         do {
-            System.out.println("*************HOTEL MANAGEMENT*************");
-            System.out.println("1. Customer Management");
-            System.out.println("2. Room Management");
+            System.out.println("*************STORE MANAGEMENT*************");
+            System.out.println("1. Products management");
+            System.out.println("2. Categories management");
             System.out.println("0. Exit");
             System.out.print("Please choose: ");
             choice = validator.getIntInput(scanner);
             switch (choice) {
                 case 1:
-                    customerMenu(scanner);
+                    productsMenu(scanner);
                     break;
                 case 2:
-                    roomMenu(scanner);
+                    categoriesMenu(scanner);
+
                     break;
                 case 0:
                     System.out.println("Goodbye!");
@@ -46,11 +47,11 @@ public class HotelManagement {
     }
 
 
-    private static void roomMenu(Scanner scanner) {
+    private static void productsMenu(Scanner scanner) {
         int choice;
         do {
-            System.out.println("*************ROOM MANAGEMENT*************");
-            for (RoomMenuEnum menu : RoomMenuEnum.values()) {
+            System.out.println("*************PRODUCT MANAGEMENT*************");
+            for (ProductMenuEnum menu : ProductMenuEnum.values()) {
                 System.out.println(menu.getValue() + ". " + menu.getDescription());
             }
             System.out.print("Please choose: ");
@@ -58,28 +59,25 @@ public class HotelManagement {
 
             switch (choice) {
                 case 1:
-                    displayAllRooms();
+//                    displayAllRooms();
                     break;
                 case 2:
-                    addRoom(scanner);
+//                    addRoom(scanner);
                     break;
                 case 3:
-                    updateRoom(scanner);
+//                    updateRoom(scanner);
                     break;
                 case 4:
-                    deleteRoom(scanner);
+//                    deleteRoom(scanner);
                     break;
                 case 5:
-                    searchRoomByType(scanner);
+//                    searchRoomByType(scanner);
                     break;
                 case 6:
-                    searchRoomByPrice(scanner);
+//                    searchRoomByPrice(scanner);
                     break;
                 case 7:
-                    searchRoomByStatus(scanner);
-                    break;
-                case 8:
-                    getRoomAvailability();
+//                    searchRoomByStatus(scanner);
                     break;
                 case 0:
                     break;
@@ -192,11 +190,11 @@ public class HotelManagement {
     }
 
 
-    private static void customerMenu(Scanner scanner) {
+    private static void categoriesMenu(Scanner scanner) {
         int choice;
         do {
             System.out.println("*************CUSTOMER MANAGEMENT*************");
-            for (CustomerMenuEnum menu : CustomerMenuEnum.values()) {
+            for (CategoriesMenuEnum menu : CategoriesMenuEnum.values()) {
                 System.out.println(menu.getValue() + ". " + menu.getDescription());
             }
             System.out.print("Please choose: ");
@@ -204,19 +202,19 @@ public class HotelManagement {
 
             switch (choice) {
                 case 1:
-                    displayAllCustomers();
+//                    displayAllCustomers();
                     break;
                 case 2:
-                    addCustomer(scanner);
+//                    addCustomer(scanner);
                     break;
                 case 3:
-                    updateCustomer(scanner);
+//                    updateCustomer(scanner);
                     break;
                 case 4:
-                    deleteCustomer(scanner);
+//                    deleteCustomer(scanner);
                     break;
                 case 5:
-                    searchCustomerByCondition(scanner);
+//                    searchCustomerByCondition(scanner);
                     break;
                 case 0:
                     break;
