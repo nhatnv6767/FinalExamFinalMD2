@@ -36,7 +36,6 @@ public class StoreManagement {
                     break;
                 case 2:
                     categoriesMenu(scanner);
-
                     break;
                 case 0:
                     System.err.println("Goodbye!");
