@@ -1,9 +1,6 @@
 package ra.validation;
 
 import ra.DAO.CategoriesBusiness;
-import ra.DAO.CustomerBusiness;
-import ra.DAO.RoomBusiness;
-import ra.entity.Customer;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -60,30 +57,30 @@ public class Validator {
         }
     }
 
-    public String getPhoneNumberInput(Scanner scanner, String prompt) {
-        String input;
-        CustomerBusiness customerBusiness = new CustomerBusiness();
-        do {
-            System.out.print(prompt);
-            input = scanner.nextLine().trim();
-            if (!input.matches("\\d{11}")) {
-                System.err.println("Số điện thoại phải gồm 11 chữ số.");
-            } else if (isPhoneNumberDuplicate(input, customerBusiness)) {
-                System.err.println("Số điện thoại đã tồn tại.");
-            }
-        } while (!input.matches("\\d{11}") || isPhoneNumberDuplicate(input, customerBusiness));
-        return input;
-    }
-
-    private boolean isPhoneNumberDuplicate(String phoneNumber, CustomerBusiness customerBusiness) {
-        Customer[] customers = customerBusiness.getAll();
-        for (Customer customer : customers) {
-            if (customer.getPhoneNumber().equals(phoneNumber)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public String getPhoneNumberInput(Scanner scanner, String prompt) {
+//        String input;
+//        CustomerBusiness customerBusiness = new CustomerBusiness();
+//        do {
+//            System.out.print(prompt);
+//            input = scanner.nextLine().trim();
+//            if (!input.matches("\\d{11}")) {
+//                System.err.println("Số điện thoại phải gồm 11 chữ số.");
+//            } else if (isPhoneNumberDuplicate(input, customerBusiness)) {
+//                System.err.println("Số điện thoại đã tồn tại.");
+//            }
+//        } while (!input.matches("\\d{11}") || isPhoneNumberDuplicate(input, customerBusiness));
+//        return input;
+//    }
+//
+//    private boolean isPhoneNumberDuplicate(String phoneNumber, CustomerBusiness customerBusiness) {
+//        Customer[] customers = customerBusiness.getAll();
+//        for (Customer customer : customers) {
+//            if (customer.getPhoneNumber().equals(phoneNumber)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public String getEmailInput(Scanner scanner, String prompt) {
         String input;
@@ -217,37 +214,6 @@ public class Validator {
         }
     }
 
-    public int getValidCustomerId(Scanner scanner, String prompt) {
-        CustomerBusiness customerBusiness = new CustomerBusiness();
-        int customerId;
-
-        do {
-            System.out.print(prompt);
-            customerId = getIntInput(scanner);
-            if (customerBusiness.get(customerId) == null) {
-                System.err.println("Customer ID không hợp lệ. Vui lòng thử lại.");
-            }
-        } while (customerBusiness.get(customerId) == null);
-
-
-        return customerId;
-    }
-
-    public int getValidRoomId(Scanner scanner, String prompt) {
-        RoomBusiness roomBusiness = new RoomBusiness();
-        int roomId;
-
-        do {
-            System.out.print(prompt);
-            roomId = getIntInput(scanner);
-            if (roomBusiness.get(roomId) == null) {
-                System.err.println("Room ID không hợp lệ. Vui lòng thử lại.");
-            }
-        } while (roomBusiness.get(roomId) == null);
-
-
-        return roomId;
-    }
 
     public int getValidCategoryId(Scanner scanner, String prompt) {
         CategoriesBusiness categoriesBusiness = new CategoriesBusiness();
