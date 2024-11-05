@@ -174,6 +174,7 @@ public class StoreManagement {
             return;
         }
         System.out.println("Top 3 profitable products:");
+        // something ....
         for (Products product : products) {
             product.displayData();
             System.out.println("Profit: " + (product.getSellingPrice() - product.getCostPrice()) * product.getStock());
