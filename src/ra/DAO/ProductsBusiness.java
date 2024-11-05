@@ -157,5 +157,62 @@ public class ProductsBusiness implements DAOInterface<Products> {
         return new Products[0];
     }
 
+    public List<Products> getProductsByCreatedAtDesc() {
+        List<Products> products = new ArrayList<>();
+        try {
+            openConnection();
+            callSt = conn.prepareCall("{call get_products_by_created_at_desc()}");
+            ResultSet rs = callSt.executeQuery();
+            while (rs.next()) {
+                products.add(mapProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return products;
+    }
+
+    public List<Products> searchProductsByPriceRange(double minPrice, double maxPrice) {
+        if (minPrice < 0 || maxPrice < 0 || minPrice > maxPrice) {
+            System.out.println("Invalid price range");
+            return null;
+        }
+        List<Products> products = new ArrayList<>();
+        try {
+            openConnection();
+            callSt = conn.prepareCall("{call search_products_by_price_range(?,?)}");
+            callSt.setDouble(1, minPrice);
+            callSt.setDouble(2, maxPrice);
+            ResultSet rs = callSt.executeQuery();
+            while (rs.next()) {
+                products.add(mapProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return products;
+    }
+
+    public List<Products> getTop3ProfitableProducts() {
+        List<Products> products = new ArrayList<>();
+        try {
+            openConnection();
+            callSt = conn.prepareCall("{call get_top_3_profitable_products()}");
+            ResultSet rs = callSt.executeQuery();
+            while (rs.next()) {
+                products.add(mapProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return products;
+    }
+
 
 }
