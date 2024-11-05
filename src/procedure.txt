@@ -1,3 +1,7 @@
+NGUYEN VAN NHAT
+FK_JV240711_BS_NguyenVanNhat
+
+
 CREATE TABLE Categories(
                            category_id int primary key auto_increment,
                            category_name varchar(50) not null unique ,
