@@ -1,6 +1,9 @@
 package ra.validation;
 
 import ra.DAO.CategoriesBusiness;
+import ra.DAO.ProductsBusiness;
+import ra.entity.Categories;
+import ra.entity.Products;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -229,5 +232,57 @@ public class Validator {
 
 
         return categoryId;
+    }
+
+    public boolean isCategoryNameDuplicate(String categoryName) {
+        CategoriesBusiness categoriesBusiness = new CategoriesBusiness();
+        Categories[] categories = categoriesBusiness.getAll();
+        for (Categories category : categories) {
+            if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isProductNameDuplicate(String productName) {
+        ProductsBusiness productsBusiness = new ProductsBusiness();
+        Products[] products = productsBusiness.getAll();
+        for (Products product : products) {
+            if (product.getProductName().equalsIgnoreCase(productName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getUniqueCategoryNameInput(Scanner scanner, String prompt) {
+        String input;
+        do {
+            input = getNonEmptyStringInput(scanner, prompt, 50);
+            if (input.isEmpty()) {
+                System.err.println("Tên danh mục không được để trống.");
+            } else if (isCategoryNameDuplicate(input)) {
+                System.err.println("Tên danh mục đã tồn tại.");
+            } else {
+                break;
+            }
+        } while (isCategoryNameDuplicate(input));
+        return input;
+    }
+
+    public String getUniqueProductNameInput(Scanner scanner, String prompt) {
+        String input;
+        do {
+            input = getNonEmptyStringInput(scanner, prompt, 20);
+            if (input.isEmpty()) {
+                System.err.println("Tên sản phẩm không được để trống.");
+            } else if (isProductNameDuplicate(input)) {
+                System.err.println("Tên sản phẩm đã tồn tại.");
+            } else {
+                break;
+            }
+        } while (isProductNameDuplicate(input));
+        return input;
     }
 }
