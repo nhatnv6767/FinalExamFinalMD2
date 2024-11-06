@@ -85,7 +85,7 @@ public class Products implements IStoreManager {
 
     @Override
     public void inputData(Scanner scanner, Validator validator) {
-        setProductName(validator.getNonEmptyStringInput(scanner, "Enter product name: ", 20));
+        setProductName(validator.getUniqueProductNameInput(scanner, "Enter product name: "));
         setStock(validator.getPositiveIntInput(scanner, "Enter stock (>0): "));
         setCostPrice(validator.getPositiveDoubleInput(scanner, "Enter cost price (>0): "));
         setSellingPrice(validator.getPositiveDoubleInput(scanner, "Enter selling price (>0): "));

@@ -1,6 +1,9 @@
 # NGUYEN VAN NHAT
 # FK_JV240711_BS_NguyenVanNhat
 
+create database if not exists shoppping_management;
+use shoppping_management;
+
 
 CREATE TABLE Categories(
                            category_id int primary key auto_increment,
@@ -229,7 +232,7 @@ CREATE PROCEDURE get_top_3_profitable_products(
 
 begin
 
-    select *, (selling_price - cost_price)* stock as profit
+    select *, (selling_price - cost_price) as profit
     from Products
     order by profit desc
     limit 3;

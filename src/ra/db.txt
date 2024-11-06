@@ -20,3 +20,4 @@ create table Products(
                          foreign key (category_id) references Categories(category_id)
 
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
